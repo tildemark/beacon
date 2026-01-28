@@ -1,3 +1,91 @@
+<!--
+Project BEACON (Basic Employee Attendance Connecting Oceans & Networks)
+
+README - Handoff Ready
+----------------------
+This file provides a comprehensive overview of the BEACON project, its architecture, and setup instructions. All sections are thoroughly commented for clarity and future implementation.
+-->
+
+## Overview
+
+Project BEACON is a hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) to a central HQ Cloud. It provides real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR and IT teams.
+
+---
+
+## File Structure Tree
+<!--
+This section shows the main directory and file layout for both edge and cloud components.
+-->
+```
+beacon-edge/
+│
+├── beacon_core/
+│   ├── __init__.py
+│   ├── database.py
+│   ├── harvester.py
+│   └── syncer.py
+│
+├── main.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── .env
+│
+beacon-cloud/
+│
+├── prisma/
+│   └── schema.prisma
+│
+├── app/
+│   └── api/
+│       └── beacon/
+│           └── sync/
+│               └── route.ts
+│
+├── src/
+│   └── components/
+│       ├── admin/
+│       │   └── NodeFleetGrid.tsx
+│       └── hr/
+│           └── AttendanceTable.tsx
+│
+├── .env
+├── package.json
+├── next.config.js
+```
+
+---
+
+## Architecture
+<!--
+Summarizes the technology stack and deployment targets for each part of the system.
+-->
+## Edge Gateway (beacon-edge)
+	- Harvester thread: Connects to ZKTeco, fetches logs, saves to SQLite (deduplication, device timestamp)
+	- Syncer thread: Reads `BEACON_MODE` (LAND/SEA), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch)
+
+## Key Features
+- Real-time and offline attendance sync
+- GZIP batch sync for satellite cost savings
+- Device health/heartbeat monitoring
+- Robust deduplication and error handling
+- Modern UI for IT, HR, and Employees
+- Employee self-service: login, view logs, file requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
+
+## Setup & Easy Install
+1. **Edge:**
+	 - Install Docker & Docker Compose
+	 - Clone repo, copy `.env.example` to `.env`, edit config
+	 - `docker-compose up --build -d`
+2. **Cloud:**
+	 - Set up PostgreSQL & Redis
+	 - `npx prisma migrate deploy`
+	 - `pnpm install && pnpm build && pnpm start`
+
+## License
+MIT
 
 ## Overview
 

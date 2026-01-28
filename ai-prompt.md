@@ -12,6 +12,12 @@ A hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) t
 - Employees can file invalid log requests (for wrong/missing punches)
 - Employees can submit manual log requests (if they forgot to time in/out), with file upload (proof)
 - HR/IT can review and approve/reject requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
+4.  **HR Employee Management (`/hr/employees`):**
+    - **Import employees** from company API (bulk)
+    - **Add/edit single employee**
+    - **View and manage employee schedules**
 
 **Technology Stack:**
 - **Edge (Nodes):** Python 3.9, SQLite, Docker, `pyzk` (ZKTeco Protocol).

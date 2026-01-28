@@ -7,6 +7,7 @@
 - Frontend: NodeFleetGrid (IT/Admin), AttendanceTable (HR)
 - Added employee login and dashboard (User model, authentication, EmployeeDashboard)
 - Added InvalidLogRequest and ManualLogRequest models for employee self-service
+- Added HR import/add employee and schedule management features (API, UI, DB)
 - Documented project flow and onboarding for new developers
 
 ## AI Prompt Updates

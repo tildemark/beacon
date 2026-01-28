@@ -21,7 +21,9 @@ Project BEACON is a hybrid biometric attendance system connecting Land (Offices)
 4. **Cloud API authenticates node** (Bearer token), decompresses payload, upserts logs, updates node heartbeat, and sets Redis online key.
 5. **Frontend dashboards**:
    - **IT/Admin:** NodeFleetGrid (node status, last sync)
-   - **HR:** AttendanceTable (logs, filters, confidence badge for delayed sea nodes)
+   - **HR:**
+     - AttendanceTable (logs, filters, confidence badge for delayed sea nodes)
+     - Employee management: import from company API, add/edit employee, manage schedules
    - **Employee:** EmployeeDashboard (view own logs, file invalid/manual log requests)
 6. **Employees can log in** to view their logs, file invalid log requests, or submit manual logs with proof.
 7. **HR/IT can review and approve/reject requests.**
@@ -35,6 +37,8 @@ Project BEACON is a hybrid biometric attendance system connecting Land (Offices)
 - Robust deduplication and error handling
 - Modern UI for IT, HR, and Employees
 - Employee self-service: login, view logs, file requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
 
 ---
 
