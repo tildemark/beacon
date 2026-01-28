@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  beacon:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    mem_limit: 256m
+    cpus: 0.5
+    volumes:
+      - ./beacon.db:/app/beacon.db

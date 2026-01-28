@@ -1,0 +1,23 @@
+######################################################################
+# Project BEACON Edge Gateway Docker Compose
+#
+# - Deploys the beacon-edge container with memory and CPU limits
+# - Loads environment variables from .env
+# - Persists SQLite database (beacon.db) on host
+# - Suitable for ARMv7/v8 (Raspberry Pi)
+#
+# Usage:
+#   docker-compose up --build -d
+#   docker-compose ps
+######################################################################
+version: '3.8'
+services:
+  beacon-edge:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    mem_limit: 256m
+    cpus: 0.5
+    volumes:
+      - ./beacon.db:/app/beacon.db

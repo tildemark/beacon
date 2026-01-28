@@ -1,0 +1,91 @@
+// Prisma schema for Project BEACON Cloud
+// Defines BeaconNode and AttendanceLog models
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum NodeType {
+  LAND
+  SEA
+}
+
+model BeaconNode {
+  id             String   @id @default(uuid())
+  name           String
+  type           NodeType
+  token          String   @unique // Provisioning key
+  status         String   @default("offline")
+  last_heartbeat DateTime?
+  attendanceLogs AttendanceLog[]
+
+  model User {
+    id        String   @id @default(uuid())
+    email     String   @unique
+    password  String   // Hashed password
+    name      String
+    role      UserRole @default(EMPLOYEE)
+    logs      AttendanceLog[] @relation("UserLogs")
+    invalidRequests InvalidLogRequest[]
+    manualRequests  ManualLogRequest[]
+  }
+
+  enum UserRole {
+    EMPLOYEE
+    HR
+    IT
+  }
+
+
+model AttendanceLog {
+  id         Int      @id @default(autoincrement())
+  timestamp  DateTime
+  user_id    String
+  node_id    String
+  node       BeaconNode @relation(fields: [node_id], references: [id])
+    user       User?    @relation("UserLogs", fields: [user_id], references: [id])
+    @@unique([user_id, timestamp])
+  }
+
+  model InvalidLogRequest {
+    id           String   @id @default(uuid())
+    user         User     @relation(fields: [user_id], references: [id])
+    user_id      String
+    log          AttendanceLog @relation(fields: [log_id], references: [id])
+    log_id       Int
+    reason       String
+    status       RequestStatus @default(PENDING)
+    createdAt    DateTime @default(now())
+    reviewedAt   DateTime?
+    reviewer     User?    @relation("InvalidLogReviewer", fields: [reviewer_id], references: [id])
+    reviewer_id  String?
+  }
+
+  model ManualLogRequest {
+    id           String   @id @default(uuid())
+    user         User     @relation(fields: [user_id], references: [id])
+    user_id      String
+    timestamp    DateTime
+    node         BeaconNode @relation(fields: [node_id], references: [id])
+    node_id      String
+    punch_type   Int
+    reason       String
+    proof_url    String?  // File upload URL
+    status       RequestStatus @default(PENDING)
+    createdAt    DateTime @default(now())
+    reviewedAt   DateTime?
+    reviewer     User?    @relation("ManualLogReviewer", fields: [reviewer_id], references: [id])
+    reviewer_id  String?
+  }
+
+  enum RequestStatus {
+    PENDING
+    APPROVED
+    REJECTED
+  }
+}
