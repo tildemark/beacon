@@ -7,7 +7,22 @@ A hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) t
 - **Sea Nodes:** Raspberry Pi Zero 2 W (Offline buffering, GZIP batch sync via Satellite).
 - **HQ Cloud:** Central management for IT (Device Health), HR (Payroll/Logs), and Employee self-service (view logs, file requests).
 
+- Employee login and dashboard (view own logs)
+- Employees can file invalid log requests (for wrong/missing punches)
+- Employees can submit manual log requests (if they forgot to time in/out), with file upload (proof)
+- HR/IT can review and approve/reject requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
 **Recent Additions:**
+- Employee login and dashboard (view own logs)
+- Employees can file invalid log requests (for wrong/missing punches)
+- Employees can submit manual log requests (if they forgot to time in/out), with file upload (proof)
+- HR/IT can review and approve/reject requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
+- Manual attendance upload for offline/incompatible sites (CSV/Excel or form)
+5.  **Manual Attendance Upload (`/hr/manual-upload`):**
+    - HR can upload attendance logs via CSV/Excel or form for locations without internet, Pi, or compatible biometric device
 - Employee login and dashboard (view own logs)
 - Employees can file invalid log requests (for wrong/missing punches)
 - Employees can submit manual log requests (if they forgot to time in/out), with file upload (proof)

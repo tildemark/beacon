@@ -26,12 +26,35 @@ echo "[BEACON] Cloning repository..."
 git clone <REPO_URL> beacon-edge || true
 cd beacon-edge
 
-# 4. Copy .env.example to .env and prompt for BEACON_TOKEN
+
+# 4. Copy .env.example to .env and prompt for BEACON_TOKEN and device info
 if [ ! -f .env ]; then
   cp .env.example .env
   echo "[BEACON] Please enter your BEACON_TOKEN (provisioned by HQ):"
   read -r TOKEN
   sed -i "s/^BEACON_TOKEN=.*/BEACON_TOKEN=$TOKEN/" .env
+
+  # Prompt for number of devices
+  echo "[BEACON] How many biometric devices will this node connect to?"
+  read -r DEVICE_COUNT
+  DEVICE_LIST=""
+  for ((i=1;i<=DEVICE_COUNT;i++)); do
+    echo "[BEACON] Enter IP address for device $i:"
+    read -r DEV_IP
+    echo "[BEACON] Enter device type/model for device $i (e.g., ZKTeco, Suprema, etc):"
+    read -r DEV_TYPE
+    if [ $i -eq 1 ]; then
+      DEVICE_LIST="$DEV_IP:$DEV_TYPE"
+    else
+      DEVICE_LIST="$DEVICE_LIST,$DEV_IP:$DEV_TYPE"
+    fi
+  done
+  # Save DEVICE_LIST to .env
+  if grep -q '^DEVICE_LIST=' .env; then
+    sed -i "s/^DEVICE_LIST=.*/DEVICE_LIST=$DEVICE_LIST/" .env
+  else
+    echo "DEVICE_LIST=$DEVICE_LIST" >> .env
+  fi
 fi
 
 # 5. Start the stack

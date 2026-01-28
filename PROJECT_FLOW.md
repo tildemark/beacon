@@ -1,3 +1,5 @@
+6. **Manual attendance upload:**
+   - HR can upload attendance logs via CSV/Excel or form for locations without internet, Pi, or compatible biometric device
 # Project BEACON – Developer Project Flow Documentation
 
 ## Overview
@@ -30,7 +32,24 @@ Project BEACON is a hybrid biometric attendance system connecting Land (Offices)
 
 ---
 
+- Real-time and offline attendance sync
+- GZIP batch sync for satellite cost savings
+- Device health/heartbeat monitoring
+- Robust deduplication and error handling
+- Modern UI for IT, HR, and Employees
+- Employee self-service: login, view logs, file requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
 ## Key Features
+- Real-time and offline attendance sync
+- GZIP batch sync for satellite cost savings
+- Device health/heartbeat monitoring
+- Robust deduplication and error handling
+- Modern UI for IT, HR, and Employees
+- Employee self-service: login, view logs, file requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
+- Manual attendance upload for offline/incompatible sites (CSV/Excel or form)
 - Real-time and offline attendance sync
 - GZIP batch sync for satellite cost savings
 - Device health/heartbeat monitoring

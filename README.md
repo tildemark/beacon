@@ -60,11 +60,45 @@ beacon-cloud/
 <!--
 Summarizes the technology stack and deployment targets for each part of the system.
 -->
-## Edge Gateway (beacon-edge)
-	- Harvester thread: Connects to ZKTeco, fetches logs, saves to SQLite (deduplication, device timestamp)
-	- Syncer thread: Reads `BEACON_MODE` (LAND/SEA), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch)
 
+## Edge Gateway (beacon-edge)
+
+	- **Harvester thread:** Connects to one or more biometric devices (multi-device, multi-model supported via `DEVICE_LIST` in `.env`), fetches logs, saves to SQLite (deduplication, device timestamp)
+	- **Syncer thread:** Reads `BEACON_MODE` (LAND/SEA), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch)
+
+### Multi-Device Support (Harvester)
+
+- The harvester now supports multiple biometric devices and models per node.
+- IT configures all devices for a node by setting the `DEVICE_LIST` variable in `.env`:
+
+	```env
+	DEVICE_LIST=192.168.1.201:ZKTeco,192.168.1.202:Suprema
+	```
+	- Format: `ip1:Type1,ip2:Type2,...`
+	- Example: `DEVICE_LIST=192.168.1.201:ZKTeco,192.168.1.202:Suprema`
+- On startup, the harvester parses `DEVICE_LIST` and loops over each device, using the correct driver/module per type (currently only ZKTeco is implemented; others can be added).
+- This enables flexible, IT-friendly deployment for sites with multiple or mixed biometric hardware.
+
+**See `beacon-edge/easy-install.sh` for the interactive setup flow.**
+
+- Real-time and offline attendance sync
+- GZIP batch sync for satellite cost savings
+- Device health/heartbeat monitoring
+- Robust deduplication and error handling
+- Modern UI for IT, HR, and Employees
+- Employee self-service: login, view logs, file requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
 ## Key Features
+- Real-time and offline attendance sync
+- GZIP batch sync for satellite cost savings
+- Device health/heartbeat monitoring
+- Robust deduplication and error handling
+- Modern UI for IT, HR, and Employees
+- Employee self-service: login, view logs, file requests
+- HR can import employees from company API or add manually
+- HR can view, assign, and update employee schedules
+- Manual attendance upload for offline/incompatible sites (CSV/Excel or form)
 - Real-time and offline attendance sync
 - GZIP batch sync for satellite cost savings
 - Device health/heartbeat monitoring
