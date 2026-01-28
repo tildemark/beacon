@@ -13,7 +13,7 @@ from beacon_core.database import Database
 
 # Import ZKTeco driver (add more drivers as needed)
 try:
-    from pyzk.zkmodules.zkbase import ZK
+    from zk.base import ZK
 except ImportError:
     ZK = None
 
@@ -68,7 +68,7 @@ import os
 from datetime import datetime
 from typing import List, Dict, Any
 from beacon_core.database import Database
-from pyzk.zkmodules.zkbase import ZK
+from zk.base import ZK
 
 class Harvester:
     def __init__(self, db: Database, device_ip: str, beacon_node_id: str):

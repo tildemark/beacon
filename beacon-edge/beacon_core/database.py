@@ -9,13 +9,15 @@ Database module for Project BEACON Edge Gateway
 import sqlite3
 from typing import Any, List, Tuple, Optional
 from datetime import datetime
+
+import os
 import threading
 
 # Thread lock for safe concurrent DB access
 DB_LOCK = threading.Lock()
 
-# Default SQLite DB path
-DB_PATH = 'beacon.db'
+# Default SQLite DB path (absolute path in beacon-edge directory)
+DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'beacon-edge', 'beacon.db'))
 
 # SQL to create the beacon_logs table (deduplicated by user_id, timestamp)
 CREATE_TABLE_SQL = '''
@@ -37,6 +39,13 @@ class Database:
     - Provides safe insert, fetch, and update methods
     """
     def __init__(self, db_path: str = DB_PATH):
+        import os
+        print(f"[DEBUG] CWD: {os.getcwd()}")
+        print(f"[DEBUG] DB_PATH resolved: {db_path}")
+        parent_dir = os.path.dirname(db_path)
+        print(f"[DEBUG] Parent directory: {parent_dir}")
+        print(f"[DEBUG] Parent directory exists: {os.path.exists(parent_dir)}")
+        print(f"[DEBUG] Parent directory writable: {os.access(parent_dir, os.W_OK)}")
         self.db_path = db_path
         self._init_db()
 
