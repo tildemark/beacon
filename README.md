@@ -19,6 +19,58 @@
 * **Employee:** Self-service login, log viewing, and request filing.
 
 
+---
+
+## Feature Status
+
+### ✅ Implemented Features
+
+| Feature | Status | Location |
+|---------|--------|----------|
+| Edge Gateway (LAND/SEA/OFFICE modes) | ✅ Complete | `beacon-edge/` |
+| Multi-device support (`DEVICE_LIST`) | ✅ Complete | `beacon-edge/beacon_core/harvester.py` |
+| Device diagnostics tool | ✅ Complete | `beacon-edge/test_device.py` |
+| Easy install scripts (Linux/Windows) | ✅ Complete | `beacon-edge/easy-install.sh`, `easy-install.ps1` |
+| Cloud sync API with GZIP support | ✅ Complete | `beacon-cloud/app/api/beacon/sync/route.ts` |
+| Database schema (all models) | ✅ Complete | `beacon-cloud/prisma/schema.prisma` |
+| IT Dashboard (Node Fleet Grid) | ✅ Complete | `beacon-cloud/src/components/admin/NodeFleetGrid.tsx` |
+| HR Dashboard (Attendance Table) | ✅ Complete | `beacon-cloud/src/components/hr/AttendanceTable.tsx` |
+| Biometric Enrollment Service | ✅ Complete | `beacon-edge/enrollment_service.py` |
+| User Linking & Sync (Cloud <-> Device) | ✅ Complete | `beacon-cloud/src/components/DeviceList.tsx` |
+
+### 🚧 Planned Features
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Employee Dashboard | 📋 Planned | View own logs, file requests |
+| Invalid Log Request Form | 📋 Planned | Employee self-service |
+| Manual Log Request Form | 📋 Planned | With proof upload |
+| HR Review/Approval UI | 📋 Planned | Review employee requests |
+| Employee Management UI | 📋 Planned | Import/add/edit employees |
+| Schedule Management UI | 📋 Planned | Assign and update schedules |
+| Manual Attendance Upload | 📋 Planned | CSV/Excel or form input |
+| Authentication System | 📋 Planned | NextAuth.js or JWT |
+
+---
+
+## API Endpoints
+
+### Implemented
+- **POST** `/api/beacon/sync` - Edge node log synchronization (Bearer auth, GZIP support)
+- **POST** `/api/hr/employees/[id]/enroll` - Trigger biometric enrollment
+- **POST** `/api/edge/sync-users` - Endpoint for Edge nodes to download user templates
+
+### Planned
+- **GET** `/api/employee/logs` - Fetch employee's own attendance logs
+- **POST** `/api/employee/invalid-log-request` - File invalid log request
+- **POST** `/api/employee/manual-log-request` - Submit manual log with proof
+- **GET** `/api/hr/review-requests` - List pending requests for HR review
+- **POST** `/api/hr/review-requests/:id` - Approve/reject request
+- **GET** `/api/hr/employees` - List all employees
+- **POST** `/api/hr/employees/import` - Bulk import from company API
+- **POST** `/api/hr/employees` - Add single employee
+- **PUT** `/api/hr/employees/:id` - Update employee
+- **POST** `/api/hr/manual-upload` - Manual attendance upload (CSV/Excel)
 
 ---
 
@@ -75,15 +127,6 @@ pip install -r requirements.txt
 * **Containerization:** Docker (ARMv7/v8 support, 256MB memory limit)
 * **Protocols:** ZKTeco (pyzk), REST API
 * **Core Modules:**
-* `harvester.py`: Fetches logs from devices.
-* `syncer.py`: Manages Cloud upload based on Land/Sea/Office logic.
-Handles device communication, local buffering, and cloud synchronization.
-
-* **Language:** Python 3.9+
-* **Database:** SQLite (Local buffer & deduplication)
-* **Containerization:** Docker (ARMv7/v8 support, 256MB memory limit)
-* **Protocols:** ZKTeco (pyzk), REST API
-* **Core Modules:**
 	* `harvester.py`: Fetches logs from devices.
 	* `syncer.py`: Manages Cloud upload based on Land/Sea/Office logic.
 	* `test_device.py`: Now provides a full device diagnostic (version, serial, MAC, user/fingerprint/record counts, etc.) and robust error handling for pyzk/device limitations.
@@ -95,7 +138,6 @@ Handles device communication, local buffering, and cloud synchronization.
 * For K14 and similar models, the communication password (Menu → Communication → Device Password) must match `ZK_PASSWORD` in `.env`.
 * Some firmware restricts user data access via SDK. If you see "Unauthenticated" or "object has no attribute ...", see `pyzk_troubleshooting.md` for details.
 * The test script will print all available info and clearly indicate unsupported features.
-* `database.py`: Handles local storage and deduplication.
 
 
 
@@ -125,6 +167,9 @@ beacon-edge/
 ├── requirements.txt       # Python dependencies
 ├── Dockerfile             # Multi-arch Docker build
 ├── docker-compose.yml     # Container orchestration
+├── easy-install.sh        # Linux/Pi installer
+├── easy-install.ps1       # Windows/Office installer
+├── test_device.py         # Device diagnostics tool
 ├── .env                   # Edge configuration
 │
 beacon-cloud/
@@ -134,8 +179,10 @@ beacon-cloud/
 ├── app/api/beacon/sync/
 │   └── route.ts           # Sync Endpoint
 ├── src/components/
-│   ├── admin/             # NodeFleetGrid.tsx
-│   └── hr/                # AttendanceTable.tsx
+│   ├── admin/             # IT dashboard (shown when IT logs in)
+│   │   └── NodeFleetGrid.tsx (✅ Implemented)
+│   └── hr/                # HR dashboard (main landing page)
+│       └── AttendanceTable.tsx (✅ Implemented)
 │
 ├── .env                   # Cloud configuration
 ├── package.json

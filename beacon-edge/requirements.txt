@@ -1,10 +1,12 @@
-
 # Project BEACON Edge Gateway Python Requirements
 # -----------------------------------------------
 # - pyzk: ZKTeco device communication
 # - requests: HTTP sync to cloud
-# - schedule: (Optional) for future cron-like tasks
-
-pyzk
-requests
-schedule
+# - schedule: (Optional) for future cron-like taspyzk==0.9.1
+python-dotenv==1.0.0
+requests==2.31.0
+schedule==1.2.0
+redis==5.0.1
+fastapi==0.115.0
+uvicorn==0.32.0
+pydantic==2.10.3

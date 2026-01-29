@@ -3,18 +3,12 @@ Act as a Principal Full-Stack IoT Architect. I need you to scaffold a complete, 
 
 
 **Project Objective:**
-A hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and Office HQ (LAN) to a central HQ Cloud.
-- **Land Nodes:** Raspberry Pi 4 (Real-time sync).
-- **Sea Nodes:** Raspberry Pi Zero 2 W (Offline buffering, GZIP batch sync via Satellite).
-- **Office Mode:** Standard PC/server (no Pi required), direct LAN sync for HQ/branch offices.
+A hybrid biometric attendance system connecting Land (Remote Offices), Sea (Ships), and Office HQ (LAN) to a central HQ Cloud.
+- **Land Nodes:** Raspberry Pi 4 (Real-time sync for remote offices).
+- **Sea Nodes:** Raspberry Pi Zero 2 W (Offline buffering, GZIP batch sync via Satellite for ships).
+- **Office Nodes:** Standard PC/server (no Pi required), direct LAN sync for HQ/branch offices.
 - **HQ Cloud:** Central management for IT (Device Health), HR (Payroll/Logs), and Employee self-service (view logs, file requests).
 
-- Employee login and dashboard (view own logs)
-- Employees can file invalid log requests (for wrong/missing punches)
-- Employees can submit manual log requests (if they forgot to time in/out), with file upload (proof)
-- HR/IT can review and approve/reject requests
-- HR can import employees from company API or add manually
-- HR can view, assign, and update employee schedules
 **Recent Additions:**
 - Employee login and dashboard (view own logs)
 - Employees can file invalid log requests (for wrong/missing punches)
@@ -23,18 +17,7 @@ A hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and
 - HR can import employees from company API or add manually
 - HR can view, assign, and update employee schedules
 - Manual attendance upload for offline/incompatible sites (CSV/Excel or form)
-5.  **Manual Attendance Upload (`/hr/manual-upload`):**
-    - HR can upload attendance logs via CSV/Excel or form for locations without internet, Pi, or compatible biometric device
-- Employee login and dashboard (view own logs)
-- Employees can file invalid log requests (for wrong/missing punches)
-- Employees can submit manual log requests (if they forgot to time in/out), with file upload (proof)
-- HR/IT can review and approve/reject requests
-- HR can import employees from company API or add manually
-- HR can view, assign, and update employee schedules
-4.  **HR Employee Management (`/hr/employees`):**
-    - **Import employees** from company API (bulk)
-    - **Add/edit single employee**
-    - **View and manage employee schedules**
+- OFFICE Mode for LAN-based operation at HQ/branch offices (no Pi required)
 
 
 
@@ -61,9 +44,9 @@ Create the project structure for `beacon-edge/`.
     - Implement two threaded loops:
         - **Harvester:** Connects to ZKTeco (UDP/TCP 4370), fetches logs, saves to local SQLite `beacon_logs` table (handling duplicates). *Crucial: Use device timestamp.*
         - **Syncer:** Reads env var `BEACON_MODE`.
-            - `MODE=LAND`: POSTs new logs to Cloud API every 30s.
-            - `MODE=SEA`: Checks internet (ping 8.8.8.8). If online, selects 500 logs, GZIP compresses payload, POSTs to Cloud. On success (200 OK), marks logs as synced.
-            - `MODE=OFFICE`: Real-time LAN sync, no Pi required (for HQ/branch office PC/server).
+            - `MODE=LAND`: POSTs new logs to Cloud API every 30s (for remote offices).
+            - `MODE=SEA`: Checks internet (ping 8.8.8.8). If online, selects 500 logs, GZIP compresses payload, POSTs to Cloud. On success (200 OK), marks logs as synced (for ships).
+            - `MODE=OFFICE`: Fast LAN sync every 10s, no Pi required (for HQ/branch office PC/server).
 2.  **Docker:**
     - Provide a `Dockerfile` optimized for ARMv7/v8 (Pi Zero).
     - Provide a `docker-compose.yml` with `restart: always` and memory limits (256MB).
@@ -105,12 +88,14 @@ Describe the React components needed:
 
 **Deliverables:**
 1.  Complete file structure tree.
-2.  The full `main.py` code for the Edge Gateway.
+2.  The full `main.py` code for the Edge Gateway (supporting LAND/SEA/OFFICE modes).
 3.  The `schema.prisma` file (including User, InvalidLogRequest, ManualLogRequest, RequestStatus, UserRole).
-4.  The `route.ts` code for the Sync API.
-5.  A summary of the "Easy Install" script logic for IT.
-6.  Employee authentication and dashboard scaffolding.
-7.  API and UI for invalid/manual log requests (with proof upload).
+4.  The `route.ts` code for the Sync API (with GZIP support and Bearer auth).
+5.  Easy Install scripts for IT (Linux: `easy-install.sh`, Windows: `easy-install.ps1`).
+6.  Multi-device support via `DEVICE_LIST` environment variable.
+7.  Device diagnostics tool (`test_device.py`) with robust error handling.
+8.  Employee authentication and dashboard scaffolding.
+9.  API and UI for invalid/manual log requests (with proof upload).
 
 **Tone:**
 Production-ready, strict TypeScript, robust error handling for network failures (Satellite latency), and clean architecture.

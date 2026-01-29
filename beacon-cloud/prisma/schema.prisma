@@ -43,11 +43,21 @@ model User {
   password  String   // Hashed password
   name      String
   role      UserRole @default(EMPLOYEE)
+  
+  // Biometric fields
+  biometricId         Int?     @unique // Employee ID in ZKTeco device (1-9999)
+  fingerprintTemplate String?  @db.Text // Base64 encoded fingerprint template
+  fingerprintEnrolled Boolean  @default(false)
+  enrolledAt          DateTime?
+  enrolledBy          User?    @relation("EnrolledBy", fields: [enrolledById], references: [id], onDelete: SetNull)
+  enrolledById        String?
+  
   logs      AttendanceLog[] @relation("UserLogs")
   invalidRequests InvalidLogRequest[]
   manualRequests  ManualLogRequest[]
   reviewedInvalidRequests InvalidLogRequest[] @relation("InvalidLogReviewer")
   reviewedManualRequests ManualLogRequest[] @relation("ManualLogReviewer")
+  enrolledUsers  User[] @relation("EnrolledBy")
 }
 
 model AttendanceLog {

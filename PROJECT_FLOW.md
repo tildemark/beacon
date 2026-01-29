@@ -1,21 +1,3 @@
-## Python Environment
-
-It is recommended to use a Python virtual environment for all development and deployment:
-
-```
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-# Easy Install Scripts
-* For interactive setup, use the script for your platform:
-  * Linux/Raspberry Pi: `beacon-edge/easy-install.sh`
-  * Windows/Office: `beacon-edge/easy-install.ps1`
-# Device Diagnostics and Troubleshooting
-
-* Use `test_device.py` to print all available device info (version, serial, MAC, user/fingerprint/record counts, etc.).
-* If you see "Unauthenticated" or "object has no attribute ...", check your `.env` for `ZK_PASSWORD` and see `pyzk_troubleshooting.md` for device/SDK limitations.
 # Project BEACON – Developer Project Flow Documentation
 
 ## Overview
@@ -50,14 +32,6 @@ Project BEACON is a hybrid biometric attendance system connecting Land (Offices)
 
 ---
 
-- Real-time and offline attendance sync
-- GZIP batch sync for satellite cost savings
-- Device health/heartbeat monitoring
-- Robust deduplication and error handling
-- Modern UI for IT, HR, and Employees
-- Employee self-service: login, view logs, file requests
-- HR can import employees from company API or add manually
-- HR can view, assign, and update employee schedules
 ## Key Features
 
 - Real-time and offline attendance sync

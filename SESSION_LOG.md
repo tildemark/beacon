@@ -26,13 +26,24 @@
 - Added manual attendance upload for offline/incompatible sites (CSV/Excel or form)
 - **Office Mode:** LAN-based, Pi-less deployment for HQ/branch offices (BEACON_MODE=OFFICE)
 - Documented project flow and onboarding for new developers
+- **Documentation Review (2026-01-29):** Comprehensive review and cleanup of all documentation files
+  - Removed duplicate content from ai-prompt.md, README.md, and PROJECT_FLOW.md
+  - Added OFFICE Mode documentation throughout
+  - Added feature status tables and API endpoint documentation
+  - Clarified implemented vs. planned features
+  - Updated file structure to reflect actual implementation
 
 ## AI Prompt Updates
 - Added support for employee login, invalid log requests, and manual log submissions with proof
 - Updated project flow documentation to reflect new features
 - **Added Office Mode as a supported deployment.**
+- **Comprehensive documentation cleanup and feature status clarification**
 
 ## Next Steps
 - Implement authentication (NextAuth.js or custom)
-- Scaffold and implement employee dashboard and request forms
+- Implement employee dashboard and request forms
 - Build review/approval flows for HR/IT
+- Implement HR employee management UI (import/add/edit)
+- Implement schedule management UI
+- Implement manual attendance upload UI
+- Add Schedule model to schema or document alternative approach
