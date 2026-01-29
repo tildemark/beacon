@@ -16,10 +16,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { Redis } from '@upstash/redis';
+import Redis from 'ioredis';
 import zlib from 'zlib';
 
-const redis = Redis.fromEnv();
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
 export async function POST(req: NextRequest) {
   // 1. Authenticate using Bearer token
@@ -65,9 +65,11 @@ export async function POST(req: NextRequest) {
       where: { id: node.id },
       data: { last_heartbeat: new Date(), status: 'online' },
     });
-    // 4. Set Redis key for online status (SEA: 1h, LAND: 5m)
-    const ttl = node.type === 'SEA' ? 3600 : 300;
-    await redis.set(`node:${node.id}:online`, true, { ex: ttl });
+    // 4. Set Redis key for online status (SEA: 1h, LAND: 5m, OFFICE: 2m)
+    let ttl = 300; // Default 5m for LAND
+    if (node.type === 'SEA') ttl = 3600;
+    else if (node.type === 'OFFICE') ttl = 120;
+    await redis.set(`node:${node.id}:online`, 'true', 'EX', ttl);
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: 'DB error' }, { status: 500 });

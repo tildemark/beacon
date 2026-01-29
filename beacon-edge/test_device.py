@@ -89,34 +89,10 @@ def main():
             except Exception as e:
                 print(f"  MAC Address: [Unavailable] {e}")
             try:
-                print(f"  IP Address: {conn.get_ip()}")
-            except Exception as e:
-                print(f"  IP Address: [Unavailable] {e}")
-            try:
-                print(f"  Port: {conn.get_port()}")
-            except Exception as e:
-                print(f"  Port: [Unavailable] {e}")
-            try:
                 print(f"  Device Time: {conn.get_time()}")
             except Exception as e:
                 print(f"  Device Time: [Unavailable] {e}")
-            # Capacity info
-            try:
-                print(f"  User Count: {conn.get_user_count()}")
-            except Exception as e:
-                print(f"  User Count: [Unavailable] {e}")
-            try:
-                print(f"  Fingerprint Count: {conn.get_fingerprint_count()}")
-            except Exception as e:
-                print(f"  Fingerprint Count: [Unavailable] {e}")
-            try:
-                print(f"  Attendance Record Count: {conn.get_attendance_count()}")
-            except Exception as e:
-                print(f"  Attendance Record Count: [Unavailable] {e}")
-            try:
-                print(f"  Free Record Space: {conn.get_free_record_count()}")
-            except Exception as e:
-                print(f"  Free Record Space: [Unavailable] {e}")
+
             # Try to fetch a user directly from the device
             print("[TEST] Attempting to fetch a user from the device...")
             try:
