@@ -3,7 +3,8 @@
 # Project BEACON – Developer Project Flow Documentation
 
 ## Overview
-Project BEACON is a hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) to a central HQ Cloud. It supports real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR, IT, and Employees.
+
+Project BEACON is a hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and Office HQ (LAN) to a central HQ Cloud. It supports real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR, IT, and Employees. Now includes **Office Mode** for direct LAN-based operation at HQ/branch offices without a Raspberry Pi.
 
 ---
 
@@ -16,10 +17,11 @@ Project BEACON is a hybrid biometric attendance system connecting Land (Offices)
 
 ## High-Level Flow
 1. **Employee clocks in/out on ZKTeco device.**
-2. **Edge Gateway (Raspberry Pi) harvests logs** from device, stores in local SQLite DB (deduplication by user/timestamp).
+2. **Edge Gateway (Raspberry Pi or Office PC) harvests logs** from device, stores in local SQLite DB (deduplication by user/timestamp).
 3. **Syncer thread uploads logs** to Cloud API:
-   - LAND: Real-time JSON sync
-   - SEA: Batch GZIP sync (500 logs max, only when online)
+   - LAND: Real-time JSON sync (Raspberry Pi, remote offices)
+   - SEA: Batch GZIP sync (500 logs max, only when online, ships)
+   - OFFICE: Real-time LAN sync (no Pi required, HQ/branch office PC/server)
 4. **Cloud API authenticates node** (Bearer token), decompresses payload, upserts logs, updates node heartbeat, and sets Redis online key.
 5. **Frontend dashboards**:
    - **IT/Admin:** NodeFleetGrid (node status, last sync)
@@ -41,8 +43,10 @@ Project BEACON is a hybrid biometric attendance system connecting Land (Offices)
 - HR can import employees from company API or add manually
 - HR can view, assign, and update employee schedules
 ## Key Features
+
 - Real-time and offline attendance sync
 - GZIP batch sync for satellite cost savings
+- **Office Mode:** LAN-based, Pi-less operation for HQ/office
 - Device health/heartbeat monitoring
 - Robust deduplication and error handling
 - Modern UI for IT, HR, and Employees
@@ -50,14 +54,6 @@ Project BEACON is a hybrid biometric attendance system connecting Land (Offices)
 - HR can import employees from company API or add manually
 - HR can view, assign, and update employee schedules
 - Manual attendance upload for offline/incompatible sites (CSV/Excel or form)
-- Real-time and offline attendance sync
-- GZIP batch sync for satellite cost savings
-- Device health/heartbeat monitoring
-- Robust deduplication and error handling
-- Modern UI for IT, HR, and Employees
-- Employee self-service: login, view logs, file requests
-- HR can import employees from company API or add manually
-- HR can view, assign, and update employee schedules
 
 ---
 

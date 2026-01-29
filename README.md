@@ -8,7 +8,8 @@ This file provides a comprehensive overview of the BEACON project, its architect
 
 ## Overview
 
-Project BEACON is a hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) to a central HQ Cloud. It provides real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR and IT teams.
+
+Project BEACON is a hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and Office HQ (LAN) to a central HQ Cloud. It provides real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR and IT teams. Now includes **Office Mode** for direct LAN-based operation at HQ without a Raspberry Pi.
 
 ---
 
@@ -61,10 +62,21 @@ beacon-cloud/
 Summarizes the technology stack and deployment targets for each part of the system.
 -->
 
+
 ## Edge Gateway (beacon-edge)
 
 	- **Harvester thread:** Connects to one or more biometric devices (multi-device, multi-model supported via `DEVICE_LIST` in `.env`), fetches logs, saves to SQLite (deduplication, device timestamp)
-	- **Syncer thread:** Reads `BEACON_MODE` (LAND/SEA), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch)
+	- **Syncer thread:** Reads `BEACON_MODE` (LAND/SEA/OFFICE), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch, LAN for OFFICE)
+
+### New: Office Mode (LAN, No Pi Required)
+
+- **Office Mode** is designed for HQ or office environments with stable LAN connectivity. It allows direct connection from a standard PC/server (no Raspberry Pi required) to the biometric devices and cloud, leveraging the local network for real-time sync.
+- Set `BEACON_MODE=OFFICE` in `.env` to enable this mode.
+- **Key differences:**
+  - No Raspberry Pi needed; can run on any Windows/Linux PC/server.
+  - Uses LAN for direct, real-time sync (like LAND mode, but optimized for office IT environments).
+  - Ideal for HQ or branch offices with reliable network infrastructure.
+
 
 ### Multi-Device Support (Harvester)
 
@@ -89,9 +101,11 @@ Summarizes the technology stack and deployment targets for each part of the syst
 - Employee self-service: login, view logs, file requests
 - HR can import employees from company API or add manually
 - HR can view, assign, and update employee schedules
+
 ## Key Features
 - Real-time and offline attendance sync
 - GZIP batch sync for satellite cost savings
+- **Office Mode:** LAN-based, Pi-less operation for HQ/office
 - Device health/heartbeat monitoring
 - Robust deduplication and error handling
 - Modern UI for IT, HR, and Employees
@@ -99,14 +113,6 @@ Summarizes the technology stack and deployment targets for each part of the syst
 - HR can import employees from company API or add manually
 - HR can view, assign, and update employee schedules
 - Manual attendance upload for offline/incompatible sites (CSV/Excel or form)
-- Real-time and offline attendance sync
-- GZIP batch sync for satellite cost savings
-- Device health/heartbeat monitoring
-- Robust deduplication and error handling
-- Modern UI for IT, HR, and Employees
-- Employee self-service: login, view logs, file requests
-- HR can import employees from company API or add manually
-- HR can view, assign, and update employee schedules
 
 ## Setup & Easy Install
 1. **Edge:**
@@ -167,9 +173,10 @@ beacon-cloud/
 ### Architecture
 
 
+
 ## Edge Gateway (beacon-edge)
 	- Harvester thread: Connects to ZKTeco, fetches logs, saves to SQLite (deduplication, device timestamp)
-	- Syncer thread: Reads `BEACON_MODE` (LAND/SEA), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch)
+	- Syncer thread: Reads `BEACON_MODE` (LAND/SEA/OFFICE), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch, LAN for OFFICE)
 
 <!--
 Project BEACON (Basic Employee Attendance Connecting Oceans & Networks)

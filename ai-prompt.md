@@ -1,10 +1,12 @@
 Act as a Principal Full-Stack IoT Architect. I need you to scaffold a complete, end-to-end solution for **Project BEACON** (Basic Employee Attendance Connecting Oceans & Networks).
 
 
+
 **Project Objective:**
-A hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) to a central HQ Cloud.
+A hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and Office HQ (LAN) to a central HQ Cloud.
 - **Land Nodes:** Raspberry Pi 4 (Real-time sync).
 - **Sea Nodes:** Raspberry Pi Zero 2 W (Offline buffering, GZIP batch sync via Satellite).
+- **Office Mode:** Standard PC/server (no Pi required), direct LAN sync for HQ/branch offices.
 - **HQ Cloud:** Central management for IT (Device Health), HR (Payroll/Logs), and Employee self-service (view logs, file requests).
 
 - Employee login and dashboard (view own logs)
@@ -50,6 +52,7 @@ Create the project structure for `beacon-edge/`.
         - **Syncer:** Reads env var `BEACON_MODE`.
             - `MODE=LAND`: POSTs new logs to Cloud API every 30s.
             - `MODE=SEA`: Checks internet (ping 8.8.8.8). If online, selects 500 logs, GZIP compresses payload, POSTs to Cloud. On success (200 OK), marks logs as synced.
+            - `MODE=OFFICE`: Real-time LAN sync, no Pi required (for HQ/branch office PC/server).
 2.  **Docker:**
     - Provide a `Dockerfile` optimized for ARMv7/v8 (Pi Zero).
     - Provide a `docker-compose.yml` with `restart: always` and memory limits (256MB).
