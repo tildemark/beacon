@@ -60,20 +60,77 @@ def main():
         print("[TEST] Device connectivity: OK")
         logs = db.fetch_unsynced_logs(limit=5)
         print(f"[TEST] Sample logs fetched (up to 5): {logs if logs else 'No logs found.'}")
-        # Try to fetch a user directly from the device
-        print("[TEST] Attempting to fetch a user from the device...")
+
+        print("[TEST] Querying device info via pyzk...")
+        from zk.base import ZK
+        zk_password = int(os.getenv('ZK_PASSWORD', '0'))
+        zk = ZK(DEVICE_IP, port=4370, timeout=10, password=zk_password, force_udp=False, ommit_ping=True)
         try:
-            zk = ZK(DEVICE_IP, timeout=5)
             conn = zk.connect()
-            users = conn.get_users()
-            if users:
-                user = users[0]
-                print(f"[TEST] Sample user: UID={user.uid}, Name={user.name}, Privilege={user.privilege}, Card={user.card}")
-            else:
-                print("[TEST] No users found on device.")
+            # Device info
+            try:
+                print(f"  Device Name: {conn.get_device_name()}")
+            except Exception as e:
+                print(f"  Device Name: [Unavailable] {e}")
+            try:
+                print(f"  Platform: {conn.get_platform()}")
+            except Exception as e:
+                print(f"  Platform: [Unavailable] {e}")
+            try:
+                print(f"  Serial Number: {conn.get_serialnumber()}")
+            except Exception as e:
+                print(f"  Serial Number: [Unavailable] {e}")
+            try:
+                print(f"  Firmware Version: {conn.get_firmware_version()}")
+            except Exception as e:
+                print(f"  Firmware Version: [Unavailable] {e}")
+            try:
+                print(f"  MAC Address: {conn.get_mac()}")
+            except Exception as e:
+                print(f"  MAC Address: [Unavailable] {e}")
+            try:
+                print(f"  IP Address: {conn.get_ip()}")
+            except Exception as e:
+                print(f"  IP Address: [Unavailable] {e}")
+            try:
+                print(f"  Port: {conn.get_port()}")
+            except Exception as e:
+                print(f"  Port: [Unavailable] {e}")
+            try:
+                print(f"  Device Time: {conn.get_time()}")
+            except Exception as e:
+                print(f"  Device Time: [Unavailable] {e}")
+            # Capacity info
+            try:
+                print(f"  User Count: {conn.get_user_count()}")
+            except Exception as e:
+                print(f"  User Count: [Unavailable] {e}")
+            try:
+                print(f"  Fingerprint Count: {conn.get_fingerprint_count()}")
+            except Exception as e:
+                print(f"  Fingerprint Count: [Unavailable] {e}")
+            try:
+                print(f"  Attendance Record Count: {conn.get_attendance_count()}")
+            except Exception as e:
+                print(f"  Attendance Record Count: [Unavailable] {e}")
+            try:
+                print(f"  Free Record Space: {conn.get_free_record_count()}")
+            except Exception as e:
+                print(f"  Free Record Space: [Unavailable] {e}")
+            # Try to fetch a user directly from the device
+            print("[TEST] Attempting to fetch a user from the device...")
+            try:
+                users = conn.get_users()
+                if users:
+                    user = users[0]
+                    print(f"[TEST] Sample user: UID={user.uid}, Name={user.name}, Privilege={user.privilege}, Card={user.card}")
+                else:
+                    print("[TEST] No users found on device.")
+            except Exception as ue:
+                print(f"[TEST] Could not fetch user from device: {ue}")
             conn.disconnect()
-        except Exception as ue:
-            print(f"[TEST] Could not fetch user from device: {ue}")
+        except Exception as e:
+            print(f"[TEST] Could not connect/query device: {e}")
     except Exception as e:
         print(f"[TEST] Device connectivity: FAILED\nError: {e}")
 

@@ -1,3 +1,9 @@
+## Device Info & pyzk Limitations
+
+- The `test_device.py` script will attempt to print all available device info (version, serial, MAC, user/fingerprint/record counts, etc.).
+- If you see `object has no attribute ...`, it means pyzk or your device firmware does not support that feature.
+- For K14 and similar models, the communication password (Menu → Communication → Device Password) must match `ZK_PASSWORD` in `.env`.
+- Some firmware restricts user data access via SDK. If you see "Unauthenticated" even with the correct password, this is a device/firmware limitation.
 # Troubleshooting pyzk Installation and Import Issues
 
 ## Common Issues

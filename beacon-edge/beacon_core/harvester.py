@@ -37,7 +37,8 @@ class Harvester:
             print(f"[Harvester] Checking device {ip} ({dev_type})...")
             if dev_type.lower() == 'zkteco':
                 try:
-                    zk = ZK(ip, port=4370, timeout=10, password=0, force_udp=False, ommit_ping=True)
+                    zk_password = int(os.getenv('ZK_PASSWORD', '0'))
+                    zk = ZK(ip, port=4370, timeout=10, password=zk_password, force_udp=False, ommit_ping=True)
                     conn = zk.connect()
                     logs = conn.get_attendance()
                     print(f"[Harvester][DEBUG] Raw logs from device {ip}: {logs}")

@@ -38,11 +38,10 @@ A hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and
 
 
 
-**Python Environment:**
-- Use a virtual environment for all Python development:
-    - `python -m venv .venv`
-    - `source .venv/bin/activate` (or `.venv\Scripts\activate` on Windows)
-    - `pip install -r requirements.txt`
+
+**Device Diagnostics:**
+- Use `test_device.py` to print all available device info (version, serial, MAC, user/fingerprint/record counts, etc.).
+- If you see "Unauthenticated" or "object has no attribute ...", check your `.env` for `ZK_PASSWORD` and see `pyzk_troubleshooting.md` for device/SDK limitations.
 
 **Easy Install Scripts:**
 - Linux/Raspberry Pi: `beacon-edge/easy-install.sh`

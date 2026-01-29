@@ -69,7 +69,6 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Handles device communication, local buffering, and cloud synchronization.
 
 * **Language:** Python 3.9+
 * **Database:** SQLite (Local buffer & deduplication)
@@ -78,6 +77,24 @@ Handles device communication, local buffering, and cloud synchronization.
 * **Core Modules:**
 * `harvester.py`: Fetches logs from devices.
 * `syncer.py`: Manages Cloud upload based on Land/Sea/Office logic.
+Handles device communication, local buffering, and cloud synchronization.
+
+* **Language:** Python 3.9+
+* **Database:** SQLite (Local buffer & deduplication)
+* **Containerization:** Docker (ARMv7/v8 support, 256MB memory limit)
+* **Protocols:** ZKTeco (pyzk), REST API
+* **Core Modules:**
+	* `harvester.py`: Fetches logs from devices.
+	* `syncer.py`: Manages Cloud upload based on Land/Sea/Office logic.
+	* `test_device.py`: Now provides a full device diagnostic (version, serial, MAC, user/fingerprint/record counts, etc.) and robust error handling for pyzk/device limitations.
+
+---
+
+## ZKTeco Device Troubleshooting
+
+* For K14 and similar models, the communication password (Menu → Communication → Device Password) must match `ZK_PASSWORD` in `.env`.
+* Some firmware restricts user data access via SDK. If you see "Unauthenticated" or "object has no attribute ...", see `pyzk_troubleshooting.md` for details.
+* The test script will print all available info and clearly indicate unsupported features.
 * `database.py`: Handles local storage and deduplication.
 
 

@@ -12,8 +12,10 @@ pip install -r requirements.txt
 * For interactive setup, use the script for your platform:
   * Linux/Raspberry Pi: `beacon-edge/easy-install.sh`
   * Windows/Office: `beacon-edge/easy-install.ps1`
-6. **Manual attendance upload:**
-   - HR can upload attendance logs via CSV/Excel or form for locations without internet, Pi, or compatible biometric device
+# Device Diagnostics and Troubleshooting
+
+* Use `test_device.py` to print all available device info (version, serial, MAC, user/fingerprint/record counts, etc.).
+* If you see "Unauthenticated" or "object has no attribute ...", check your `.env` for `ZK_PASSWORD` and see `pyzk_troubleshooting.md` for device/SDK limitations.
 # Project BEACON – Developer Project Flow Documentation
 
 ## Overview
