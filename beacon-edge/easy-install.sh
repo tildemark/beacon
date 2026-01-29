@@ -21,10 +21,23 @@ if ! command -v docker-compose &> /dev/null; then
   pip3 install docker-compose
 fi
 
-# 3. Clone repo and setup
-echo "[BEACON] Cloning repository..."
-git clone <REPO_URL> beacon-edge || true
-cd beacon-edge
+# 3. Load .env and clone repo (prevent nested beacon-edge)
+echo "[BEACON] Loading .env for install constants..."
+if [ ! -f .env ]; then
+  echo "[ERROR] .env file not found. Please create .env with REPO_URL before running this script."
+  exit 1
+fi
+REPO_URL=$(grep '^REPO_URL=' .env | cut -d'=' -f2-)
+CURRENT_DIR=$(basename "$PWD")
+if [ "$CURRENT_DIR" = "beacon-edge" ]; then
+  echo "[BEACON] Already inside a beacon-edge folder. Skipping clone."
+else
+  echo "[BEACON] Cloning repository from $REPO_URL ..."
+  if [ ! -d beacon-edge ]; then
+    git clone "$REPO_URL" beacon-edge
+  fi
+  cd beacon-edge
+fi
 
 
 # 4. Copy .env.example to .env and prompt for BEACON_TOKEN and device info

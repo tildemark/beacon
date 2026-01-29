@@ -1,342 +1,186 @@
-<!--
-Project BEACON (Basic Employee Attendance Connecting Oceans & Networks)
+# Project BEACON
 
-README - Handoff Ready
-----------------------
-This file provides a comprehensive overview of the BEACON project, its architecture, and setup instructions. All sections are thoroughly commented for clarity and future implementation.
--->
+### (Basic Employee Attendance Connecting Oceans & Networks)
 
-## Overview
-
-
-Project BEACON is a hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and Office HQ (LAN) to a central HQ Cloud. It provides real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR and IT teams. Now includes **Office Mode** for direct LAN-based operation at HQ without a Raspberry Pi.
-
----
-
-## File Structure Tree
-<!--
-This section shows the main directory and file layout for both edge and cloud components.
--->
-```
-beacon-edge/
-│
-├── beacon_core/
-│   ├── __init__.py
-│   ├── database.py
-│   ├── harvester.py
-│   └── syncer.py
-│
-├── main.py
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-├── .env
-│
-beacon-cloud/
-│
-├── prisma/
-│   └── schema.prisma
-│
-├── app/
-│   └── api/
-│       └── beacon/
-│           └── sync/
-│               └── route.ts
-│
-├── src/
-│   └── components/
-│       ├── admin/
-│       │   └── NodeFleetGrid.tsx
-│       └── hr/
-│           └── AttendanceTable.tsx
-│
-├── .env
-├── package.json
-├── next.config.js
-```
-
----
-
-## Architecture
-<!--
-Summarizes the technology stack and deployment targets for each part of the system.
--->
-
-
-## Edge Gateway (beacon-edge)
-
-	- **Harvester thread:** Connects to one or more biometric devices (multi-device, multi-model supported via `DEVICE_LIST` in `.env`), fetches logs, saves to SQLite (deduplication, device timestamp)
-	- **Syncer thread:** Reads `BEACON_MODE` (LAND/SEA/OFFICE), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch, LAN for OFFICE)
-
-### New: Office Mode (LAN, No Pi Required)
-
-- **Office Mode** is designed for HQ or office environments with stable LAN connectivity. It allows direct connection from a standard PC/server (no Raspberry Pi required) to the biometric devices and cloud, leveraging the local network for real-time sync.
-- Set `BEACON_MODE=OFFICE` in `.env` to enable this mode.
-- **Key differences:**
-  - No Raspberry Pi needed; can run on any Windows/Linux PC/server.
-  - Uses LAN for direct, real-time sync (like LAND mode, but optimized for office IT environments).
-  - Ideal for HQ or branch offices with reliable network infrastructure.
-
-
-### Multi-Device Support (Harvester)
-
-- The harvester now supports multiple biometric devices and models per node.
-- IT configures all devices for a node by setting the `DEVICE_LIST` variable in `.env`:
-
-	```env
-	DEVICE_LIST=192.168.1.201:ZKTeco,192.168.1.202:Suprema
-	```
-	- Format: `ip1:Type1,ip2:Type2,...`
-	- Example: `DEVICE_LIST=192.168.1.201:ZKTeco,192.168.1.202:Suprema`
-- On startup, the harvester parses `DEVICE_LIST` and loops over each device, using the correct driver/module per type (currently only ZKTeco is implemented; others can be added).
-- This enables flexible, IT-friendly deployment for sites with multiple or mixed biometric hardware.
-
-**See `beacon-edge/easy-install.sh` for the interactive setup flow.**
-
-- Real-time and offline attendance sync
-- GZIP batch sync for satellite cost savings
-- Device health/heartbeat monitoring
-- Robust deduplication and error handling
-- Modern UI for IT, HR, and Employees
-- Employee self-service: login, view logs, file requests
-- HR can import employees from company API or add manually
-- HR can view, assign, and update employee schedules
-
-## Key Features
-- Real-time and offline attendance sync
-- GZIP batch sync for satellite cost savings
-- **Office Mode:** LAN-based, Pi-less operation for HQ/office
-- Device health/heartbeat monitoring
-- Robust deduplication and error handling
-- Modern UI for IT, HR, and Employees
-- Employee self-service: login, view logs, file requests
-- HR can import employees from company API or add manually
-- HR can view, assign, and update employee schedules
-- Manual attendance upload for offline/incompatible sites (CSV/Excel or form)
-
-## Setup & Easy Install
-1. **Edge:**
-	 - Install Docker & Docker Compose
-	 - Clone repo, copy `.env.example` to `.env`, edit config
-	 - `docker-compose up --build -d`
-2. **Cloud:**
-	 - Set up PostgreSQL & Redis
-	 - `npx prisma migrate deploy`
-	 - `pnpm install && pnpm build && pnpm start`
-
-## License
-MIT
-
-## Overview
-
-Project BEACON is a hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) to a central HQ Cloud. It provides real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR and IT teams.
-
-## File Structure Tree
-```
-beacon-edge/
-│
-├── beacon_core/
-│   ├── __init__.py
-│   ├── database.py
-│   ├── harvester.py
-│   └── syncer.py
-│
-├── main.py
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-├── .env
-│
-beacon-cloud/
-│
-├── prisma/
-│   └── schema.prisma
-│
-├── app/
-│   └── api/
-│       └── beacon/
-│           └── sync/
-│               └── route.ts
-│
-├── src/
-│   └── components/
-│       ├── admin/
-│       │   └── NodeFleetGrid.tsx
-│       └── hr/
-│           └── AttendanceTable.tsx
-│
-├── .env
-├── package.json
-├── next.config.js
-```
-
-### Architecture
-
-
-
-## Edge Gateway (beacon-edge)
-	- Harvester thread: Connects to ZKTeco, fetches logs, saves to SQLite (deduplication, device timestamp)
-	- Syncer thread: Reads `BEACON_MODE` (LAND/SEA/OFFICE), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch, LAN for OFFICE)
-
-<!--
-Project BEACON (Basic Employee Attendance Connecting Oceans & Networks)
-
-README - Handoff Ready
-----------------------
-This file provides a comprehensive overview of the BEACON project, its architecture, and setup instructions. All sections are thoroughly commented for clarity and future implementation.
--->
-
-# Project BEACON (Basic Employee Attendance Connecting Oceans & Networks)
-
-## Overview
-
-Project BEACON is a hybrid biometric attendance system connecting Land (Offices) and Sea (Ships) to a central HQ Cloud. It provides real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR and IT teams.
-
----
-
-## File Structure Tree
-<!--
-This section shows the main directory and file layout for both edge and cloud components.
--->
-```
-beacon-edge/
-	beacon_core/
-		__init__.py         # Python package marker
-		database.py         # SQLite logic and deduplication
-		harvester.py        # ZKTeco device communication and log harvesting
-		syncer.py           # Cloud sync logic (LAND/SEA modes)
-	main.py               # Entry point, launches harvester/syncer threads
-	requirements.txt      # Python dependencies
-	Dockerfile            # Docker build for ARMv7/v8
-	docker-compose.yml    # Compose config, memory limits, .env usage
-	.env                  # Edge environment variables
-
-beacon-cloud/
-	prisma/
-		schema.prisma       # Prisma schema for DB
-	app/api/beacon/sync/route.ts # Cloud API endpoint for log sync
-	src/components/admin/NodeFleetGrid.tsx # IT dashboard grid
-	src/components/hr/AttendanceTable.tsx  # HR dashboard table
-	.env                  # Cloud environment variables
-	package.json          # Node/Next.js dependencies
-	next.config.js        # Next.js config
-```
-
----
-
-## Architecture
-<!--
-Summarizes the technology stack and deployment targets for each part of the system.
--->
-- **Edge Gateway (beacon-edge):** Python 3.9, SQLite, Docker, ZKTeco protocol (pyzk)
-- **Cloud Backend (beacon-cloud):** Next.js (App Router), TypeScript, PostgreSQL (Prisma), Redis
-- **Frontend UI:** React, Tailwind CSS, ShadcnUI
-
----
-
-## Edge Gateway (beacon-edge)
-<!--
-Describes the edge device roles, core logic, and Dockerization.
--->
-- **Land Nodes:** Raspberry Pi 4 (real-time sync)
-- **Sea Nodes:** Raspberry Pi Zero 2 W (offline buffering, GZIP batch sync via Satellite)
-- **Core Logic:**
-	- Harvester thread: Connects to ZKTeco, fetches logs, saves to SQLite (deduplication, device timestamp)
-	- Syncer thread: Reads `BEACON_MODE` (LAND/SEA), syncs logs to Cloud API (GZIP for SEA, 500 logs/batch)
-- **Dockerized:** ARMv7/v8, 256MB memory limit, .env for config
-## Cloud Backend (beacon-cloud)
-- **Database:** PostgreSQL via Prisma
-- **API:** Next.js App Router, `/api/beacon/sync` endpoint
-	- Auth via Bearer token (per node)
-	- Handles GZIP payloads
-	- Upserts logs, updates node heartbeat, sets Redis online key
-
-## Frontend UI
-- **IT Dashboard:** NodeFleetGrid.tsx (Node status, type, last sync)
-- **HR Dashboard:** AttendanceTable.tsx (Attendance logs, filters, confidence badge for delayed sea nodes)
-
----
-
-## Setup & Easy Install
-1. **Edge:**
-	 - Install Docker & Docker Compose
-	 - Clone repo, copy `.env.example` to `.env`, edit config
-	 - `docker-compose up --build -d`
-2. **Cloud:**
-	 - Set up PostgreSQL & Redis
-	 - `npx prisma migrate deploy`
-	 - `pnpm install && pnpm build && pnpm start`
+**Project BEACON** is a hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and HQ (LAN) to a central Cloud. It provides real-time and offline attendance logging, robust device health monitoring, and seamless integration for HR and IT teams.
 
 ---
 
 ## Key Features
-- Real-time and offline attendance sync
-- GZIP batch sync for satellite cost savings
-- Device health/heartbeat monitoring
-- Robust deduplication and error handling
-- Modern UI for IT and HR
+
+* **Hybrid Connectivity:** Supports real-time sync (Land/Office) and store-and-forward batching (Sea).
+* **Bandwidth Optimization:** GZIP compression for satellite data cost savings (Sea Mode).
+* **Multi-Device Support:** Connects to multiple biometric devices per node via `DEVICE_LIST` config.
+* **Resilience:** Robust SQLite buffering, deduplication, and offline capabilities.
+* **Device Health:** Automated heartbeat monitoring and status reporting.
+* **Dashboards:**
+* **IT:** Fleet status, node types, and sync health.
+* **HR:** Attendance logs, schedule management, and manual upload options.
+* **Employee:** Self-service login, log viewing, and request filing.
+
+
 
 ---
 
-## License
-MIT
-# Project BEACON (Basic Employee Attendance Connecting Oceans & Networks)
+## Operating Modes
 
-A hybrid biometric attendance gateway for Raspberry Pi, bridging ZKTeco hardware with a centralized Cloud API. Supports both real-time (LAND) and store-and-forward (SEA) operation modes.
+BEACON is designed to run in three specific environments, controlled by the `BEACON_MODE` environment variable.
 
-## Features
-- **LAND Mode:** Real-time sync for offices with stable LAN/Fiber.
-- **SEA Mode:** Store-and-forward batching for ships with erratic Satellite internet, with GZIP compression to save bandwidth.
-- **Hardware:**
-	- Gateway: Raspberry Pi 4 (Land) / Raspberry Pi Zero 2 W (Sea)
-	- Sensors: ZKTeco K40/UA300 (Ethernet)
-	- Peripherals: DS3231 RTC Module (Sea units only)
-- **Software:**
-	- Python 3.9+
-	- SQLite local buffer
-	- pyzk for ZKTeco comms
-	- REST API sync
-	- Dockerized for ARMv7/v8
+### 1. LAND Mode (Standard Branch)
+
+* **Hardware:** Raspberry Pi 4.
+* **Connectivity:** Stable Internet/Fiber.
+* **Behavior:** Real-time synchronization (approx. 30s interval).
+
+### 2. SEA Mode (Maritime/Remote)
+
+* **Hardware:** Raspberry Pi Zero 2 W + DS3231 RTC Module.
+* **Connectivity:** Erratic Satellite Internet.
+* **Behavior:**
+* Store-and-forward batching (15-minute intervals).
+* Checks for connectivity (ping `8.8.8.8`) before attempting sync.
+* **GZIP Compression:** Compresses JSON payloads to minimize data usage.
+
+
+
+### 3. OFFICE Mode (HQ/LAN)
+
+* **Hardware:** Standard Windows/Linux PC or Server (No Raspberry Pi required).
+* **Connectivity:** Local LAN.
+* **Behavior:**
+* Direct connection from PC to biometric devices and Cloud.
+* Ideal for HQ or sites with reliable internal infrastructure.
+
+
+
+---
+
+## Architecture & Tech Stack
+
+### Edge Gateway (`beacon-edge`)
+
+#### Python Environment Setup
+
+It is recommended to use a Python virtual environment for all development and deployment:
+
+```sh
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Handles device communication, local buffering, and cloud synchronization.
+
+* **Language:** Python 3.9+
+* **Database:** SQLite (Local buffer & deduplication)
+* **Containerization:** Docker (ARMv7/v8 support, 256MB memory limit)
+* **Protocols:** ZKTeco (pyzk), REST API
+* **Core Modules:**
+* `harvester.py`: Fetches logs from devices.
+* `syncer.py`: Manages Cloud upload based on Land/Sea/Office logic.
+* `database.py`: Handles local storage and deduplication.
+
+
+
+### Cloud Backend (`beacon-cloud`)
+
+Centralized API and Dashboard.
+
+* **Framework:** Next.js (App Router), TypeScript.
+* **Database:** PostgreSQL (via Prisma ORM).
+* **Caching:** Redis (Online status/Heartbeat).
+* **UI:** React, Tailwind CSS, ShadcnUI.
+
+---
 
 ## File Structure
+
+```text
+beacon-edge/
+│
+├── beacon_core/
+│   ├── __init__.py        # Package marker
+│   ├── database.py        # SQLite logic & deduplication
+│   ├── harvester.py       # Device comms (ZKTeco)
+│   └── syncer.py          # Cloud sync logic (GZIP/Batching)
+│
+├── main.py                # Entry point
+├── requirements.txt       # Python dependencies
+├── Dockerfile             # Multi-arch Docker build
+├── docker-compose.yml     # Container orchestration
+├── .env                   # Edge configuration
+│
+beacon-cloud/
+│
+├── prisma/
+│   └── schema.prisma      # DB Schema
+├── app/api/beacon/sync/
+│   └── route.ts           # Sync Endpoint
+├── src/components/
+│   ├── admin/             # NodeFleetGrid.tsx
+│   └── hr/                # AttendanceTable.tsx
+│
+├── .env                   # Cloud configuration
+├── package.json
+└── next.config.js
+
 ```
-beacon_core/
-	database.py   # SQLite logic
-	harvester.py  # ZKTeco communication
-	syncer.py     # Cloud upload logic
-main.py         # Entry point
-requirements.txt
-Dockerfile
-.env
+
+---
+
+## Setup & Configuration
+
+### 1. Edge Gateway Setup
+
+1. **Install:** Ensure Docker & Docker Compose are installed.
+2. **Configure:**
+* Clone the repo.
+* Copy `.env.example` to `.env`.
+* Set `BEACON_MODE` (LAND/SEA/OFFICE) and `CLOUD_API_URL`.
+
+
+3. **Device Configuration (`DEVICE_LIST`):**
+* To support multiple devices, set the variable in `.env`:
+```env
+DEVICE_LIST=192.168.1.201:ZKTeco,192.168.1.202:Suprema
+
 ```
 
-## Usage
-1. **Configure Environment:**
-	 - Copy `.env` and set values for `BEACON_MODE`, `DEVICE_IP`, `CLOUD_API_URL`, `BEACON_NODE_ID`.
-2. **Build & Run (Docker Compose):**
-	 ```sh
-	 docker-compose up --build
-	 ```
-3. **Modes:**
-	 - `LAND`: 30s sync interval, immediate upload.
-	 - `SEA`: 15min sync, pings 8.8.8.8, GZIPs payload, batches up to 500 logs.
 
-## Bandwidth Optimization (SEA Mode)
-- Only syncs when online (ping check).
-- GZIP-compresses JSON payloads to minimize satellite data costs.
-- Never double-counts logs (deduplication in database).
 
-## Docker
-- **Base image:** python:3.9-slim-buster
-- **Memory limit:** 256MB (see `docker-compose.yml`)
-- **Volumes:** Persists `beacon.db` locally.
 
-## Requirements
-- pyzk
-- requests
-- schedule
+4. **Run:**
+```bash
+docker-compose up --build -d
+
+```
+
+
+
+*For interactive setup, use the script for your platform:*
+* Linux/Raspberry Pi: `beacon-edge/easy-install.sh`
+* Windows/Office: `beacon-edge/easy-install.ps1`
+
+### 2. Cloud Backend Setup
+
+1. **Prerequisites:** PostgreSQL and Redis must be running.
+2. **Database Migration:**
+```bash
+npx prisma migrate deploy
+
+```
+
+
+3. **Build & Start:**
+```bash
+pnpm install && pnpm build && pnpm start
+
+```
+
+
+
+---
 
 ## License
+
 MIT
-# beacon
-BEACON Basic Employee Attendance Connecting Oceans &amp; Networks let go with this

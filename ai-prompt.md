@@ -36,6 +36,18 @@ A hybrid biometric attendance system connecting Land (Offices), Sea (Ships), and
     - **Add/edit single employee**
     - **View and manage employee schedules**
 
+
+
+**Python Environment:**
+- Use a virtual environment for all Python development:
+    - `python -m venv .venv`
+    - `source .venv/bin/activate` (or `.venv\Scripts\activate` on Windows)
+    - `pip install -r requirements.txt`
+
+**Easy Install Scripts:**
+- Linux/Raspberry Pi: `beacon-edge/easy-install.sh`
+- Windows/Office: `beacon-edge/easy-install.ps1`
+
 **Technology Stack:**
 - **Edge (Nodes):** Python 3.9, SQLite, Docker, `pyzk` (ZKTeco Protocol).
 - **Cloud Backend:** Next.js (App Router), TypeScript, PostgreSQL (Prisma), Redis.

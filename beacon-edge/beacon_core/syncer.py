@@ -66,9 +66,10 @@ class Syncer:
         Syncs unsynced logs to the cloud API.
         - LAND: Sends all unsynced logs as JSON
         - SEA: Sends up to 500 logs as GZIP-compressed JSON if online
+        - OFFICE: Same as LAND, but logs as OFFICE and uses LAN intervals
         Marks logs as synced on success. Handles errors gracefully.
         """
-        if self.mode == 'LAND':
+        if self.mode in ('LAND', 'OFFICE'):
             logs = self.db.fetch_unsynced_logs()
             if not logs:
                 return
@@ -87,8 +88,9 @@ class Syncer:
                 )
                 if resp.status_code == 200:
                     self.db.mark_logs_synced([log[0] for log in logs])
+                print(f"[Syncer] {self.mode} sync: {len(logs)} logs sent, status {resp.status_code}")
             except Exception as e:
-                print(f"[Syncer] LAND sync error: {e}")
+                print(f"[Syncer] {self.mode} sync error: {e}")
         elif self.mode == 'SEA':
             if not self._is_online():
                 # No connectivity, skip sync to save satellite bandwidth

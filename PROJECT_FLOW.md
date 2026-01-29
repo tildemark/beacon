@@ -1,3 +1,17 @@
+## Python Environment
+
+It is recommended to use a Python virtual environment for all development and deployment:
+
+```
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+# Easy Install Scripts
+* For interactive setup, use the script for your platform:
+  * Linux/Raspberry Pi: `beacon-edge/easy-install.sh`
+  * Windows/Office: `beacon-edge/easy-install.ps1`
 6. **Manual attendance upload:**
    - HR can upload attendance logs via CSV/Excel or form for locations without internet, Pi, or compatible biometric device
 # Project BEACON – Developer Project Flow Documentation

@@ -19,7 +19,7 @@ DB_LOCK = threading.Lock()
 # Default SQLite DB path (absolute path in beacon-edge directory)
 DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'beacon-edge', 'beacon.db'))
 
-# SQL to create the beacon_logs table (deduplicated by user_id, timestamp)
+# SQL to create the beacon_logs table (deduplicated by user_id, timestamp, punch_type, beacon_node_id)
 CREATE_TABLE_SQL = '''
 CREATE TABLE IF NOT EXISTS beacon_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS beacon_logs (
     punch_type INTEGER NOT NULL,
     sync_status INTEGER NOT NULL DEFAULT 0,
     beacon_node_id TEXT NOT NULL,
-    UNIQUE(user_id, timestamp)
+    UNIQUE(user_id, timestamp, punch_type, beacon_node_id)
 );
 '''
 

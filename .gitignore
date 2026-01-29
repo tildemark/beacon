@@ -1,0 +1,54 @@
+# .gitignore for Project BEACON
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# Environment
+.env
+.env.*
+.venv/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# Docker
+beacon.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Misc
+*.bak
+*.swp
+*.swo
+
+# Ignore built/compiled files
+/build/
+/dist/
+
+# Ignore coverage
+.coverage
+coverage/
+
+# Ignore test output
+htmlcov/
+
+# Ignore cloud build artifacts
+.next/
+
+# Ignore Prisma
+prisma/migrations/

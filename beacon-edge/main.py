@@ -14,30 +14,31 @@ BEACON_NODE_ID = os.getenv('BEACON_NODE_ID', str(uuid.uuid4()))
 
 POLL_INTERVALS = {
 	'LAND': {'harvest': 60, 'sync': 30},
-	'SEA': {'harvest': 60, 'sync': 900}  # 900s = 15min
+	'SEA': {'harvest': 60, 'sync': 900},  # 900s = 15min
+	'OFFICE': {'harvest': 30, 'sync': 10}  # Faster polling for LAN
 }
 
 db = Database()
 harvester = Harvester(db, DEVICE_IP, BEACON_NODE_ID)
 syncer = Syncer(db, BEACON_NODE_ID, API_URL, BEACON_MODE, BEACON_TOKEN)
 
+
 def harvester_thread():
 	while True:
 		try:
 			harvester.fetch_and_store_logs()
 		except Exception as e:
-			# Log error
 			print(f"[Harvester] Error: {e}")
-		time.sleep(POLL_INTERVALS[BEACON_MODE]['harvest'])
+		time.sleep(POLL_INTERVALS.get(BEACON_MODE, POLL_INTERVALS['LAND'])['harvest'])
+
 
 def syncer_thread():
 	while True:
 		try:
 			syncer.sync()
 		except Exception as e:
-			# Log error
 			print(f"[Syncer] Error: {e}")
-		time.sleep(POLL_INTERVALS[BEACON_MODE]['sync'])
+		time.sleep(POLL_INTERVALS.get(BEACON_MODE, POLL_INTERVALS['LAND'])['sync'])
 
 def main():
 	t1 = threading.Thread(target=harvester_thread, daemon=True)

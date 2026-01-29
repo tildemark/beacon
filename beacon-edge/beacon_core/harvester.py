@@ -11,42 +11,36 @@ from datetime import datetime
 from typing import List, Dict, Any
 from beacon_core.database import Database
 
-# Import ZKTeco driver (add more drivers as needed)
-try:
-    from zk.base import ZK
-except ImportError:
-    ZK = None
+
+# Unified Harvester: supports single or multiple devices, debug output, and future extensibility
+from zk.base import ZK
 
 class Harvester:
-    """
-    Handles communication with multiple biometric devices and log harvesting.
-    Supports multiple device types/models (scaffold for future extension).
-    """
-    def __init__(self, db: Database, beacon_node_id: str):
+    def __init__(self, db: Database, beacon_node_id: str, device_ip: str = None):
         self.db = db
         self.beacon_node_id = beacon_node_id
-        # Parse DEVICE_LIST from .env (format: ip1:Type1,ip2:Type2,...)
+        # Support both DEVICE_LIST and single device_ip for backward compatibility
         device_list = os.getenv('DEVICE_LIST', '')
         self.devices = []
-        for entry in device_list.split(','):
-            if ':' in entry:
-                ip, dev_type = entry.split(':', 1)
-                self.devices.append({'ip': ip.strip(), 'type': dev_type.strip()})
+        if device_list:
+            for entry in device_list.split(','):
+                if ':' in entry:
+                    ip, dev_type = entry.split(':', 1)
+                    self.devices.append({'ip': ip.strip(), 'type': dev_type.strip()})
+        elif device_ip:
+            self.devices.append({'ip': device_ip, 'type': 'ZKTeco'})
 
     def fetch_and_store_logs(self) -> None:
-        """
-        Loops through all configured devices, fetches logs, and stores them in SQLite.
-        Uses correct driver/module per device type (currently only ZKTeco supported).
-        """
         for dev in self.devices:
             ip = dev['ip']
             dev_type = dev['type']
             print(f"[Harvester] Checking device {ip} ({dev_type})...")
-            if dev_type.lower() == 'zkteco' and ZK:
+            if dev_type.lower() == 'zkteco':
                 try:
                     zk = ZK(ip, port=4370, timeout=10, password=0, force_udp=False, ommit_ping=True)
                     conn = zk.connect()
                     logs = conn.get_attendance()
+                    print(f"[Harvester][DEBUG] Raw logs from device {ip}: {logs}")
                     for log in logs:
                         self.db.insert_ignore_duplicates(
                             user_id=str(log.user_id),
@@ -64,36 +58,3 @@ class Harvester:
                         pass
             else:
                 print(f"[Harvester] Device type {dev_type} not supported yet. Skipping {ip}.")
-import os
-from datetime import datetime
-from typing import List, Dict, Any
-from beacon_core.database import Database
-from zk.base import ZK
-
-class Harvester:
-    def __init__(self, db: Database, device_ip: str, beacon_node_id: str):
-        self.db = db
-        self.device_ip = device_ip
-        self.beacon_node_id = beacon_node_id
-
-    def fetch_and_store_logs(self) -> None:
-        zk = ZK(self.device_ip, port=4370, timeout=10, password=0, force_udp=False, ommit_ping=True)
-        try:
-            conn = zk.connect()
-            logs = conn.get_attendance()
-            for log in logs:
-                # Always trust device timestamp (not Pi system time)
-                self.db.insert_ignore_duplicates(
-                    user_id=str(log.user_id),
-                    timestamp=log.timestamp,
-                    punch_type=log.punch,
-                    beacon_node_id=self.beacon_node_id
-                )
-        except Exception as e:
-            # Log or handle connection errors as needed
-            pass
-        finally:
-            try:
-                conn.disconnect()
-            except Exception:
-                pass

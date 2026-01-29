@@ -11,6 +11,8 @@
 - Added manual attendance upload for offline/incompatible sites (CSV/Excel or form)
 - **Added Office Mode:** LAN-based, Pi-less deployment for HQ/branch offices (BEACON_MODE=OFFICE)
 - Documented project flow and onboarding for new developers
+- Added PowerShell easy-install script (`easy-install.ps1`) for Windows/Office users
+- Standardized on using `.venv` for Python virtual environments in all documentation and onboarding
 
 ## Major Milestones & Design Decisions
 - Initial scaffold: Edge (Python), Cloud (Next.js/Prisma), Docker, .env
