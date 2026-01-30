@@ -49,6 +49,7 @@ htmlcov/
 
 # Ignore cloud build artifacts
 .next/
+build_output.txt
 
 # Ignore Prisma
 prisma/migrations/
